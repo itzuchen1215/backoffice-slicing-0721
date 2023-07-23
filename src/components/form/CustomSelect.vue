@@ -30,7 +30,12 @@ const value = computed({
       v-model="value"
       class="w-[calc(100%-8px)] cursor-pointer truncate px-2 text-sm xl:text-lg"
     >
-      <option v-for="item in options" :value="item.value" :disabled="item.disabled">
+      <option
+        v-for="(item, index) in options"
+        :value="item.value"
+        :key="index"
+        :disabled="item.disabled"
+      >
         {{ item.name }}
       </option>
     </select>

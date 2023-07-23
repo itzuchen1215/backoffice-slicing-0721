@@ -5,10 +5,3 @@ export interface ITreeMenu {
   icon?: string
   children?: ITreeMenu[]
 }
-
-export type TreeMenuNode = Omit<ITreeMenu, 'children'>
-
-export interface ITreeDetail {
-  group: number
-  level: number
-}

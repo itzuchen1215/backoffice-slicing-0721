@@ -34,7 +34,7 @@ defineEmits(['cancelCollect'])
             </span>
           </div>
         </div>
-        <div class="mt-3 xl:flex justify-between">
+        <div class="mt-3 justify-between xl:flex">
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3 xl:pl-[39px]">
             <div class="flex items-center gap-[6px]">
               <IconLikes />
@@ -50,13 +50,15 @@ defineEmits(['cancelCollect'])
             </div>
           </div>
           <div class="mt-[14px] xl:mt-0">
-            <time class="text-xs font-semibold xl:text-[#737791] xl:font-normal">{{ item.date }}</time>
+            <time class="text-xs font-semibold xl:font-normal xl:text-[#737791]">{{
+              item.date
+            }}</time>
           </div>
         </div>
       </li>
     </template>
   </ul>
-  <div v-else class="py-10 text-center xl:py-16 xl:bg-white">No Data</div>
+  <div v-else class="py-10 text-center xl:bg-white xl:py-16">No Data</div>
 </template>
 
 <style scoped></style>

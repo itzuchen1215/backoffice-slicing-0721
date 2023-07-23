@@ -48,7 +48,6 @@ const countryOptions: ISelectOption[] = [
 
 const searchType = ref('all')
 const selectedCountry = ref('antananarivo')
-
 </script>
 
 <template>
@@ -56,7 +55,10 @@ const selectedCountry = ref('antananarivo')
     class="fixed z-10 flex h-[var(--header-height-mobile)] w-full min-w-[inherit] items-center justify-between bg-white px-4 xl:h-[var(--header-height-pc)] xl:bg-[#F2F2F7] xl:pl-5 xl:pr-7 xl:pt-2"
   >
     <div class="flex">
-      <div class="flex h-8 w-8 cursor-pointer items-center justify-center" @click="$emit('clickHam')">
+      <div
+        class="flex h-8 w-8 cursor-pointer items-center justify-center"
+        @click="$emit('clickHam')"
+      >
         <div>
           <div class="h-[1px] w-[11.6px] bg-[#475B73] xl:h-[2px] xl:w-5"></div>
           <div class="my-[4.5px] h-[1px] w-[11.6px] bg-[#475B73] xl:h-[2px] xl:w-5"></div>
@@ -74,11 +76,11 @@ const selectedCountry = ref('antananarivo')
       </div>
     </div>
     <div class="flex items-center">
-      <div class="hidden xl:flex items-center">
+      <div class="hidden items-center xl:flex">
         <WeatherTime />
         <CustomSelect :options="countryOptions" v-model="selectedCountry" flat class="w-[170px]" />
       </div>
-      <div class="flex items-center gap-6 xl:gap-[51px] ml-[50px]">
+      <div class="ml-[50px] flex items-center gap-6 xl:gap-[51px]">
         <IconSearchShort class="cursor-pointer text-lg text-[#475B73] xl:hidden" />
         <IconSetting class="cursor-pointer text-lg text-[#475B73] xl:text-[28px] xl:text-black" />
         <div class="relative hidden xl:block">

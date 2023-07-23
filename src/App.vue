@@ -8,8 +8,7 @@ import FormLabel from '@/components/form/FormLabel.vue'
 import CustomSelect from '@/components/form/CustomSelect.vue'
 import CollectionList from '@/components/list/CollectionList.vue'
 import ListPagination from '@/components/list/ListPagination.vue'
-// TODO: !!
-import TreeTest from './components/menu/TreeTest.vue'
+import TreeMenu from '@/components/menu/TreeMenu.vue'
 import type { IBreadCrumbItems } from '@/components/bread-crumb/types'
 import type { ISelectOption } from '@/components/form/types'
 import type { ICollectionListItem } from './components/list/types'
@@ -83,11 +82,9 @@ const isOpen = ref(false)
 function toggleMenu() {
   isOpen.value = !isOpen.value
   isOpen.value
-    ? document.body.className = 'overflow-hidden xl:overflow-auto'
-    : document.body.className = ''
+    ? (document.body.className = 'overflow-hidden xl:overflow-auto')
+    : (document.body.className = '')
 }
-
-
 </script>
 
 <template>
@@ -96,10 +93,14 @@ function toggleMenu() {
     class="min-h-screen w-full bg-[#F2F2F7] pt-[var(--header-height-mobile)] xl:pt-[var(--header-height-pc)]"
   >
     <aside
-      class="transition-all overflow-hidden fixed z-10 h-[calc(100vh-var(--header-height-mobile))] xl:h-[calc(100vh-var(--header-height-pc))]"
-      :class="isOpen ? 'w-full xl:w-[var(--left-menu-width)]' : 'hidden xl:w-[var(--left-menu-width-narrow)] xl:block'"
+      class="fixed z-10 h-[calc(100vh-var(--header-height-mobile))] overflow-hidden transition-all xl:h-[calc(100vh-var(--header-height-pc))]"
+      :class="
+        isOpen
+          ? 'w-full xl:w-[var(--left-menu-width)]'
+          : 'hidden xl:block xl:w-[var(--left-menu-width-narrow)]'
+      "
     >
-      <TreeTest :isExpand="isOpen" @clickNarrowIcon="toggleMenu" />
+      <TreeMenu :isExpand="isOpen" @clickNarrowIcon="toggleMenu" />
     </aside>
     <main
       class="h-full px-4 pb-7 transition-all xl:pl-0"

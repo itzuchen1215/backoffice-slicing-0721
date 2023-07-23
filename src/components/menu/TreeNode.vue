@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { defineAsyncComponent, type PropType } from 'vue'
+import type { PropType } from 'vue'
 import IconChevronDown from '@/components/icons/IconChevronDown.vue'
 import { useTreeMenu } from './useTreeMenu'
 import type { ITreeMenu } from './type'
 
-const props = defineProps({
+defineProps({
   treeNode: Object as PropType<ITreeMenu>,
   isActive: Boolean,
   level: Number
@@ -53,7 +53,7 @@ function hasChildren(item: ITreeMenu[] | undefined) {
 }
 
 .level1-block {
-  @apply gap-5 py-3 pl-14;
+  @apply gap-5 py-3 pl-[60px];
 }
 .level1-label {
   @apply text-sm font-semibold text-[#11263C];
