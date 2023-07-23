@@ -40,6 +40,12 @@
   }
 }
 
+@layer utilities {
+  .scrolling-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 #app {
   min-width: 320px;
 }

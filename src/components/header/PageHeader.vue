@@ -9,6 +9,8 @@ import TextInput from '@/components/form/TextInput.vue'
 import CustomSelect from '@/components/form/CustomSelect.vue'
 import type { ISelectOption } from '@/components/form/types'
 
+defineEmits(['clickHam'])
+
 const searchOptions: ISelectOption[] = [
   {
     value: 'all',
@@ -46,6 +48,7 @@ const countryOptions: ISelectOption[] = [
 
 const searchType = ref('all')
 const selectedCountry = ref('antananarivo')
+
 </script>
 
 <template>
@@ -53,7 +56,7 @@ const selectedCountry = ref('antananarivo')
     class="fixed z-10 flex h-[var(--header-height-mobile)] w-full min-w-[inherit] items-center justify-between bg-white px-4 xl:h-[var(--header-height-pc)] xl:bg-[#F2F2F7] xl:px-7 xl:pt-2"
   >
     <div class="flex">
-      <div class="flex h-8 w-8 cursor-pointer items-center justify-center">
+      <div class="flex h-8 w-8 cursor-pointer items-center justify-center" @click="$emit('clickHam')">
         <div>
           <div class="h-[1px] w-[11.6px] bg-[#475B73] xl:h-[2px] xl:w-5"></div>
           <div class="my-[4.5px] h-[1px] w-[11.6px] bg-[#475B73] xl:h-[2px] xl:w-5"></div>

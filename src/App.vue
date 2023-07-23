@@ -8,6 +8,8 @@ import FormLabel from '@/components/form/FormLabel.vue'
 import CustomSelect from '@/components/form/CustomSelect.vue'
 import CollectionList from '@/components/list/CollectionList.vue'
 import ListPagination from '@/components/list/ListPagination.vue'
+// TODO: !!
+import TreeTest from './components/menu/TreeTest.vue'
 import type { IBreadCrumbItems } from '@/components/bread-crumb/types'
 import type { ISelectOption } from '@/components/form/types'
 import type { ICollectionListItem } from './components/list/types'
@@ -71,21 +73,47 @@ function handleCancelCollect(id: string) {
 }
 
 function handlePageChange(page: number) {
-  getCollectList();
-  console.log(page);
+  // use page to fetch api
+  getCollectList()
 }
+
+// MENU
+const isOpen = ref(false)
+function toggleMenu() {
+  isOpen.value = !isOpen.value
+  isOpen.value
+    ? document.body.classList.add('overflow-hidden xl:overflow-auto')
+    : document.body.classList.remove('overflow-hidden xl:overflow-auto')
+}
+
+
 </script>
 
 <template>
-  <PageHeader />
-  <div class="min-h-screen w-full bg-[#F2F2F7] pt-[var(--header-height-mobile)] xl:pt-[var(--header-height-pc)]">
-    <aside class="fixed hidden h-full">QQ</aside>
-    <main class="h-full w-full px-4 pb-7">
+  <PageHeader @click-ham="toggleMenu" />
+  <div
+    class="min-h-screen w-full bg-[#F2F2F7] pt-[var(--header-height-mobile)] xl:pt-[var(--header-height-pc)]"
+  >
+    <aside
+      class="overflow-hidden fixed z-10 h-[calc(100vh-var(--header-height-mobile))] bg-white xl:h-[calc(100vh-var(--header-height-pc))]"
+      :class="isOpen ? 'w-full xl:w-[var(--left-menu-width)]' : 'w-0 xl:w-[var(--left-menu-width-narrow)]'"
+    >
+      <TreeTest :is-expand="isOpen" />
+    </aside>
+    <main
+      class="h-full px-4 pb-7 xl:ml-[var(--left-menu-width-narrow)]"
+      :class="{ 'xl:ml-[var(--left-menu-width)]': isOpen }"
+    >
       <div class="mt-4 pl-1">
         <BreadCrumb :items="breadItems" />
       </div>
       <div class="mt-4 xl:hidden">
-        <TextInput class="h-[42px]" placeholder="Search here..." searchButton v-model="searchInput" />
+        <TextInput
+          class="h-[42px]"
+          placeholder="Search here..."
+          search-button
+          v-model="searchInput"
+        />
       </div>
       <div class="mt-4 bg-white px-[18px] py-6 xl:flex xl:items-end xl:gap-4">
         <FormLabel label="Category" class="mb-5 xl:mb-0">
@@ -97,11 +125,16 @@ function handlePageChange(page: number) {
         <SearchButton />
       </div>
       <div class="mt-5 bg-white px-[10px] py-[17px] xl:bg-transparent xl:px-0">
-        <div class="xl:mb-[14px] xl:flex xl:justify-between xl:items-center">
+        <div class="xl:mb-[14px] xl:flex xl:items-center xl:justify-between">
           <h2 class="text-base font-semibold leading-6">My Collection</h2>
-          <ListPagination :pageSize="10" :total="480" @pageChange="handlePageChange" class="hidden xl:flex" />
+          <ListPagination
+            :page-size="10"
+            :total="480"
+            @page-change="handlePageChange"
+            class="hidden xl:flex"
+          />
         </div>
-        <CollectionList :list="collectionList" @cancelCollect="handleCancelCollect" />
+        <CollectionList :list="collectionList" @cancel-collect="handleCancelCollect" />
       </div>
     </main>
   </div>
