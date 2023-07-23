@@ -11,19 +11,22 @@ function handleClickItem(item: IBreadCrumbItems) {
   if (item.isCurrent) {
     return
   }
-  // router push to path
   // router.push(item.path)
 }
 </script>
 
 <template>
-  <ul class="flex items-center gap-[10px]" v-if="items">
+  <ul class="flex items-center gap-[10px] xl:gap-4" v-if="items">
     <template v-for="(item, index) in items" :key="item.name">
-      <li class="leading-[30px] text-xs cursor-pointer" :class="{'current': item.isCurrent}" @click="handleClickItem(item)">
+      <li
+        class="cursor-pointer text-xs leading-[30px] text-[#737791] xl:text-[14px]"
+        :class="{ current: item.isCurrent }"
+        @click="handleClickItem(item)"
+      >
         {{ item.name }}
       </li>
       <li v-if="index + 1 < items.length">
-        <IconChevron class="text-[#737791] h-[10px]" />
+        <IconChevron class="h-[10px] text-[#737791]" />
       </li>
     </template>
   </ul>
@@ -31,6 +34,6 @@ function handleClickItem(item: IBreadCrumbItems) {
 
 <style scoped>
 .current {
-  @apply text-sm font-medium text-[#121212] cursor-default tracking-[1.4px];
+  @apply cursor-default text-sm font-medium tracking-[1.4px] text-[#121212];
 }
 </style>

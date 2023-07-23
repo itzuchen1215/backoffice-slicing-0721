@@ -4,7 +4,7 @@ import IconChevronDown from '@/components/icons/IconChevronDown.vue'
 
 <template>
   <div class="flex items-center gap-2 cursor-pointer">
-    <img src="@/assets/fake-avatar.webp" alt="avatar-photo" class="rounded-l-full w-7 h-7" />
-    <IconChevronDown class="hidden" />
+    <img src="@/assets/fake-avatar.webp" alt="avatar-photo" class="rounded-l-full w-7 h-7 xl:w-[50px] xl:h-[50px]" />
+    <IconChevronDown class="hidden xl:block xl:text-[8px]" />
   </div>
 </template>

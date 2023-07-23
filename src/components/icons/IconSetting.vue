@@ -1,5 +1,5 @@
 <template>
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
     <path
       id="Vector"
       d="M9.99983 12.4545C11.3554 12.4545 12.4544 11.3556 12.4544 9.99996C12.4544 8.64435 11.3554 7.54541 9.99983 7.54541C8.64423 7.54541 7.54529 8.64435 7.54529 9.99996C7.54529 11.3556 8.64423 12.4545 9.99983 12.4545Z"

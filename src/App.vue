@@ -1,38 +1,107 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import PageHeader from '@/components/header/PageHeader.vue'
 import BreadCrumb from '@/components/bread-crumb/BreadCrumb.vue'
 import SearchButton from '@/components/SearchButton.vue'
-import type { IBreadCrumbItems } from './components/bread-crumb/types';
+import TextInput from '@/components/form/TextInput.vue'
+import FormLabel from '@/components/form/FormLabel.vue'
+import CustomSelect from '@/components/form/CustomSelect.vue'
+import CollectionList from '@/components/list/CollectionList.vue'
+import ListPagination from '@/components/list/ListPagination.vue'
+import type { IBreadCrumbItems } from '@/components/bread-crumb/types'
+import type { ISelectOption } from '@/components/form/types'
+import type { ICollectionListItem } from './components/list/types'
 
 const breadItems: IBreadCrumbItems[] = [
   {
     path: '/home',
     name: 'Home',
-    isCurrent: false,
+    isCurrent: false
   },
   {
     path: '/my-collection',
     name: 'My Collection',
-    isCurrent: true,
+    isCurrent: true
   }
-];
+]
+
+const categoryOptions: ISelectOption[] = [
+  {
+    value: 'hr-announcement',
+    name: 'HR Announcement'
+  },
+  {
+    value: 'news',
+    name: 'News'
+  },
+  {
+    value: 'all',
+    name: 'All'
+  }
+]
+
+const searchInput = ref<string>('')
+const subtitleInput = ref<string>('')
+const category = ref<string>('hr-announcement')
+const collectionList = ref<ICollectionListItem[]>([])
+
+async function getCollectList() {
+  // simulate fetch api
+  setTimeout(() => {
+    const list: ICollectionListItem[] = []
+    for (let i = 0; i < 10; i++) {
+      list.push({
+        id: `appx${i}`,
+        title: 'APPX System New Version Release Announce on  14th Dec...',
+        date: 'Dec 19, 2022',
+        likes: Math.floor(Math.random() * 9999),
+        comments: Math.floor(Math.random() * 9999),
+        shares: Math.floor(Math.random() * 9999),
+        tag: 'News'
+      })
+    }
+    collectionList.value = list
+  }, 50)
+}
+
+getCollectList()
+
+function handleCancelCollect(id: string) {
+  collectionList.value = collectionList.value.filter((item) => item.id !== id)
+}
+
+function handlePageChange(page: number) {
+  getCollectList();
+  console.log(page);
+}
 </script>
 
 <template>
   <PageHeader />
-  <div class="w-full pt-[var(--header-height-mobile)] bg-[#F2F2F7]">
-    <aside class="fixed h-full hidden">QQ</aside>
-    <main class="w-full h-full px-4 pb-7">
-      <div class="mt-4">
+  <div class="min-h-screen w-full bg-[#F2F2F7] pt-[var(--header-height-mobile)] xl:pt-[var(--header-height-pc)]">
+    <aside class="fixed hidden h-full">QQ</aside>
+    <main class="h-full w-full px-4 pb-7">
+      <div class="mt-4 pl-1">
         <BreadCrumb :items="breadItems" />
       </div>
-      <div class="mt-4">
-        search input
+      <div class="mt-4 xl:hidden">
+        <TextInput class="h-[42px]" placeholder="Search here..." searchButton v-model="searchInput" />
       </div>
-      <div class="mt-4 bg-white px-[18px] py-6">
-        Category select +
-        Subtitle input
+      <div class="mt-4 bg-white px-[18px] py-6 xl:flex xl:items-end xl:gap-4">
+        <FormLabel label="Category" class="mb-5 xl:mb-0">
+          <CustomSelect :options="categoryOptions" v-model="category" class="xl:w-[222px]" />
+        </FormLabel>
+        <FormLabel label="Subtitle" class="mb-6 xl:mb-0">
+          <TextInput v-model="subtitleInput" class="xl:w-[248px]" />
+        </FormLabel>
         <SearchButton />
+      </div>
+      <div class="mt-5 bg-white px-[10px] py-[17px] xl:bg-transparent xl:px-0">
+        <div class="xl:mb-[14px] xl:flex xl:justify-between xl:items-center">
+          <h2 class="text-base font-semibold leading-6">My Collection</h2>
+          <ListPagination :pageSize="10" :total="480" @pageChange="handlePageChange" class="hidden xl:flex" />
+        </div>
+        <CollectionList :list="collectionList" @cancelCollect="handleCancelCollect" />
       </div>
     </main>
   </div>
