@@ -53,7 +53,7 @@ const selectedCountry = ref('antananarivo')
 
 <template>
   <header
-    class="fixed z-10 flex h-[var(--header-height-mobile)] w-full min-w-[inherit] items-center justify-between bg-white px-4 xl:h-[var(--header-height-pc)] xl:bg-[#F2F2F7] xl:px-7 xl:pt-2"
+    class="fixed z-10 flex h-[var(--header-height-mobile)] w-full min-w-[inherit] items-center justify-between bg-white px-4 xl:h-[var(--header-height-pc)] xl:bg-[#F2F2F7] xl:pl-5 xl:pr-7 xl:pt-2"
   >
     <div class="flex">
       <div class="flex h-8 w-8 cursor-pointer items-center justify-center" @click="$emit('clickHam')">

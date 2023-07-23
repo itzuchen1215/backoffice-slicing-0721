@@ -79,11 +79,12 @@ function handlePageChange(page: number) {
 
 // MENU
 const isOpen = ref(false)
+
 function toggleMenu() {
   isOpen.value = !isOpen.value
   isOpen.value
-    ? document.body.classList.add('overflow-hidden xl:overflow-auto')
-    : document.body.classList.remove('overflow-hidden xl:overflow-auto')
+    ? document.body.className = 'overflow-hidden xl:overflow-auto'
+    : document.body.className = ''
 }
 
 
@@ -95,14 +96,14 @@ function toggleMenu() {
     class="min-h-screen w-full bg-[#F2F2F7] pt-[var(--header-height-mobile)] xl:pt-[var(--header-height-pc)]"
   >
     <aside
-      class="overflow-hidden fixed z-10 h-[calc(100vh-var(--header-height-mobile))] bg-white xl:h-[calc(100vh-var(--header-height-pc))]"
-      :class="isOpen ? 'w-full xl:w-[var(--left-menu-width)]' : 'w-0 xl:w-[var(--left-menu-width-narrow)]'"
+      class="transition-all overflow-hidden fixed z-10 h-[calc(100vh-var(--header-height-mobile))] xl:h-[calc(100vh-var(--header-height-pc))]"
+      :class="isOpen ? 'w-full xl:w-[var(--left-menu-width)]' : 'hidden xl:w-[var(--left-menu-width-narrow)] xl:block'"
     >
-      <TreeTest :is-expand="isOpen" />
+      <TreeTest :isExpand="isOpen" @clickNarrowIcon="toggleMenu" />
     </aside>
     <main
-      class="h-full px-4 pb-7 xl:ml-[var(--left-menu-width-narrow)]"
-      :class="{ 'xl:ml-[var(--left-menu-width)]': isOpen }"
+      class="h-full px-4 pb-7 transition-all xl:pl-0"
+      :class="isOpen ? 'xl:ml-[var(--left-menu-width)]' : 'xl:ml-[var(--left-menu-width-narrow)]'"
     >
       <div class="mt-4 pl-1">
         <BreadCrumb :items="breadItems" />

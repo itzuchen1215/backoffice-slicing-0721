@@ -2,6 +2,8 @@
 import { defineAsyncComponent, ref, type PropType, computed, nextTick } from 'vue'
 import type { ITreeDetail, ITreeMenu, TreeMenuNode } from './type'
 import IconChevronDown from '@/components/icons/IconChevronDown.vue'
+import TreeNode from './TreeNode.vue'
+import { useTreeMenu } from './useTreeMenu'
 
 const props = defineProps({
   treeData: {
@@ -116,64 +118,67 @@ const props = defineProps({
   },
   isExpand: {
     type: Boolean,
-    default: false,
+    default: false
   },
   defaultActive: {
     type: String,
-    default: 'b-2-3'
+    default: 'b-2-2'
   }
 })
 
-const activeNode = ref<string | null>(null);
-const expandIds = ref<string[]>([])
+const emit = defineEmits(['clickNarrowIcon']);
 
-function getIcon(iconName: string) {
-  return defineAsyncComponent(() => import(`@/components/icons/${iconName}.vue`))
-}
+const { getIcon } = useTreeMenu()
+
+const activeNode = ref<string | null>(null)
+const expandIds = ref<string[]>([])
 
 function init() {
   if (props.defaultActive) {
-    activeNode.value = props.defaultActive;
-    let initExpandIds: string[] = [];
-    findParentExpandIds(props.treeData, props.defaultActive, initExpandIds);
-    expandIds.value = initExpandIds;
+    activeNode.value = props.defaultActive
+    let initExpandIds: string[] = []
+    findParentExpandIds(props.treeData, props.defaultActive, initExpandIds)
+    expandIds.value = initExpandIds
   }
 }
-init();
+init()
 
 function findParentExpandIds(treeData: ITreeMenu[], targetId: string, result: string[]) {
   for (const item of treeData) {
     if (item.id === targetId) {
-      result.unshift(item.id);
-      return true;
+      result.unshift(item.id)
+      return true
     }
 
     if (item.children && item.children.length > 0) {
-      console.log('hasChildren', item.id);
       const isContinue = findParentExpandIds(item.children, targetId, result)
       if (isContinue) {
-        result.unshift(item.id);
-        return true;
+        result.unshift(item.id)
+        return true
       }
     }
   }
-  return false;
+  return false
 }
 
-function handleClickMenu(item: ITreeMenu, treeDetail: ITreeDetail) {
+function handleClickMenu(item: ITreeMenu) {
   if (item.path) {
     activeNode.value = item.id
-    console.log(`router.push(${item.path})`)
+    // router.push
   }
   if (item.children) {
-    toggleList(item.id, treeDetail)
+    toggleList(item.id)
   }
 }
 
-function toggleList(id: string, treeDetail: ITreeDetail) {
-  if (!treeDetail) {
-    return
+function handleClickNarrowIcon(item: ITreeMenu) {
+  if (!expandIds.value.includes(item.id)) {
+    expandIds.value.push(item.id);
   }
+  emit('clickNarrowIcon');
+}
+
+function toggleList(id: string) {
   if (expandIds.value.includes(id)) {
     expandIds.value = expandIds.value.filter((v) => v !== id)
   } else {
@@ -181,67 +186,70 @@ function toggleList(id: string, treeDetail: ITreeDetail) {
   }
 }
 
-function hasChildren(item: ITreeMenu[] | undefined) {
-  return item && item.length > 0
-}
-
-function isExpand(id: string) {
+function isChildrenExpand(id: string) {
   return expandIds.value.includes(id)
 }
 
 function isActive(id: string) {
-  return activeNode.value === id;
+  return activeNode.value === id
+}
+
+function isActiveGroup(id: string) {
+  if (!activeNode.value) {
+    return false
+  }
+  let activeGroup: string[] = []
+  findParentExpandIds(props.treeData, activeNode.value, activeGroup)
+  return activeGroup.includes(id)
 }
 </script>
 
 <template>
   <ul
     v-if="treeData && treeData.length > 0"
-    class="h-full overflow-touch overflow-y-auto overflow-x-hidden pb-7 bg-[#F2F2F7]"
+    class="overflow-touch h-full overflow-y-auto overflow-x-hidden bg-[#F2F2F7] xl:w-[var(--left-menu-width)]"
+    :class="{'xl:w-[var(--left-menu-width-narrow)]': !isExpand}"
   >
-    <li v-for="(level0Item, groupIndex) in treeData" :key="level0Item.id">
-      <div
-        class="flex cursor-pointer items-center justify-between py-4 pl-5 pr-9 xl:hover:bg-[#D8DDEB]"
-        :class="{'bg-[#D8DDEB]': isActive(level0Item.id)}"
-        @click="handleClickMenu(level0Item, { group: groupIndex, level: 0 })"
-      >
-        <div class="flex items-start gap-3">
+    <li v-for="level0Item in treeData" :key="level0Item.id">
+      <template v-if="isExpand">
+        <TreeNode
+          @click="handleClickMenu(level0Item)"
+          :level="0"
+          :isActive="isActive(level0Item.id)"
+          :treeNode="level0Item"
+        />
+      </template>
+      <!-- narrow version icon list -->
+      <template v-else>
+        <div
+          v-if="level0Item.icon"
+          class="rounded-[10px] mb-[38px] ml-[18px] flex h-10 w-10 cursor-pointer items-center justify-center first:mt-3 last:mb-0 hover:bg-[#D8DDEB]"
+          :class="{ 'bg-[#D8DDEB]': isActiveGroup(level0Item.id) }"
+          @click="handleClickNarrowIcon(level0Item)"
+        >
           <Suspense>
-            <component
-              v-if="level0Item.icon"
-              class="mt-[2px] text-xl"
-              :key="level0Item.icon"
-              :is="getIcon(level0Item.icon)"
-            />
+            <component class="text-xl" :is="getIcon(level0Item.icon)" />
           </Suspense>
-          <span class="text-base font-semibold text-[#11263C]">{{ level0Item.label }}</span>
         </div>
-        <IconChevronDown class="text-xs text-[#151D48]" v-if="hasChildren(level0Item.children)" />
-      </div>
+      </template>
       <template v-if="level0Item.children">
-        <ul v-show="isExpand(level0Item.id)">
+        <ul v-show="isChildrenExpand(level0Item.id)" :class="{ hidden: !isExpand }">
           <li v-for="level1Item in level0Item.children" :key="level1Item.id">
-            <div
-              class="flex cursor-pointer items-center gap-5 py-3 pl-14 xl:hover:bg-[#D8DDEB]"
-              :class="{'bg-[#D8DDEB]': isActive(level1Item.id)}"
-              @click="handleClickMenu(level1Item, { group: groupIndex, level: 1 })"
-            >
-              <span class="text-sm font-semibold text-[#11263C]">{{ level1Item.label }}</span>
-              <IconChevronDown
-                class="text-xs text-[#151D48]"
-                v-if="hasChildren(level1Item.children)"
-              />
-            </div>
+            <TreeNode
+              @click="handleClickMenu(level1Item)"
+              :level="1"
+              :isActive="isActive(level1Item.id)"
+              :treeNode="level1Item"
+            />
             <template v-if="level1Item.children">
-              <ul v-show="isExpand(level1Item.id)">
+              <ul v-show="isChildrenExpand(level1Item.id)">
                 <li v-for="level2Item in level1Item.children" :key="level2Item.id">
-                  <div
-                    class="cursor-pointer py-3 pl-[88px] xl:hover:bg-[#D8DDEB]"
-                    :class="{'bg-[#D8DDEB]': isActive(level2Item.id)}"
-                    @click="handleClickMenu(level2Item, { group: groupIndex, level: 2 })"
-                  >
-                    <span class="text-sm font-medium text-[#565867]">{{ level2Item.label }}</span>
-                  </div>
+                  <TreeNode
+                    @click="handleClickMenu(level2Item)"
+                    :level="2"
+                    :isActive="isActive(level2Item.id)"
+                    :treeNode="level2Item"
+                  />
                 </li>
               </ul>
             </template>
